@@ -9,12 +9,17 @@ public class PlayerHealth : MonoBehaviour
     private bool isInvincible;
     public float invincibleTime = 0.5f;
 
+    private Vector3 respawnPosition;
+    public Transform respawnPoint;
+
     public bool IsKnockedBack { get; private set; }
 
     private void Awake()
     {
         stats = GetComponent<PlayerStats>();
         rb = GetComponent<Rigidbody2D>();
+
+        respawnPosition = transform.position;
     }
 
     public void TakeDamage(int damage)
@@ -43,10 +48,20 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("게임 오버");
+        Respawn();
+    }
 
-        // 나중에 게임오버 UI 추가
-        Destroy(gameObject);
+    private void Respawn()
+    {
+        stats.currentHealth = stats.maxHealth;
+
+        transform.position = respawnPoint.position;
+
+        rb.linearVelocity = Vector2.zero;
+
+        PlayerExperience xp = GetComponent<PlayerExperience>();
+
+        FindFirstObjectByType<AugmentSelectionManager>().BeginSelection(xp.level);
     }
 
     private IEnumerator KnockbackCoroutine(Vector2 direction)
@@ -70,11 +85,8 @@ public class PlayerHealth : MonoBehaviour
 
     public void ApplyKnockback(Vector2 sourcePosition)
     {
-        Vector2 direction =
-            ((Vector2)transform.position - sourcePosition).normalized;
+        Vector2 direction = ((Vector2)transform.position - sourcePosition).normalized;
 
         StartCoroutine(KnockbackCoroutine(direction));
     }
-
-
 }
