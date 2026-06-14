@@ -62,6 +62,14 @@ public class PlayerHealth : MonoBehaviour
         PlayerExperience xp = GetComponent<PlayerExperience>();
 
         FindFirstObjectByType<AugmentSelectionManager>().BeginSelection(xp.level);
+
+        EnemyMovement[] enemies = FindObjectsByType<EnemyMovement>(
+        FindObjectsSortMode.None);
+
+        foreach (EnemyMovement enemy in enemies)
+        {
+            enemy.ResetEnemy();
+        }
     }
 
     private IEnumerator KnockbackCoroutine(Vector2 direction)

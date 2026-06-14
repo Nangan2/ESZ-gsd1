@@ -14,10 +14,13 @@ public class EnemyMovement : MonoBehaviour
 
     private float nextJumpTime;
 
+    private Vector3 spawnPosition;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         rb = GetComponent<Rigidbody2D>();
+        spawnPosition = transform.position;
     }
 
     void Update()
@@ -52,6 +55,18 @@ public class EnemyMovement : MonoBehaviour
                     jumpForce);
 
             nextJumpTime = Time.time + jumpCooldown;
+        }
+    }
+
+    public void ResetEnemy()
+    {
+        transform.position = spawnPosition;
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
         }
     }
 
